@@ -7,6 +7,7 @@ import (
     "github.com/projectdiscovery/cdncheck"
     "log"
     "net"
+    "net/url"
     "os"
     "strings"
     "sync"
@@ -59,7 +60,6 @@ func main() {
 
     }
 
-    // actually start checking
 
     var wg sync.WaitGroup
     jobs := make(chan string, concurrency)
@@ -69,6 +69,7 @@ func main() {
         go func() {
             defer wg.Done()
             for job := range jobs {
+                // actually start checking
                 cdnChecking(job)
             }
         }()
@@ -88,6 +89,17 @@ func main() {
 }
 
 func cdnChecking(ip string) {
+    // in case input as http format
+    if strings.HasPrefix(ip, "http") {
+        // parse url
+        uu , err := url.Parse(ip)
+        if err != nil {
+            fmt.Fprintf(os.Stderr, "failed to parse url: %s\n", err)
+            return
+        }
+        ip = uu.Hostname()
+    }
+
     if found, vendor, ok := cdnClient.Check(net.ParseIP(ip)); found && ok == nil {
         if writeOutput {
             nonCdnOutputWriter.WriteString(ip + "\n")
