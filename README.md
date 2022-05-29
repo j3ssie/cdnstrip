@@ -20,7 +20,7 @@ cat ips | cdnstrip -c 50
 cat ips | cdnstrip -cdn cdn.txt -n non-cdn.txt
 ```
 
-## Donation
+## Donation!!!
 
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/j3ssiejjj)
 
